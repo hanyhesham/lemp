@@ -1,0 +1,35 @@
+nginx:
+    image: tutum/nginx
+    ports:
+        - "80:80"
+    links:
+        - phpfpm
+    volumes:
+        - ./nginx/default:/etc/nginx/sites-available/default
+        - ./nginx/default:/etc/nginx/sites-enabled/default
+        - ./nginx/logs:/var/log/nginx/
+phpfpm:
+    image: php:fpm
+    ports:
+        - "9000:9000"
+    volumes:
+        - ./php:/usr/share/nginx/html
+mysql:
+  image: 'mariadb'
+  ports:
+    - '3306:3306'
+  volumes:
+    - ./db-data:/var/lib/mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=hakase-labs123
+phpmyadmin:
+    image: 'phpmyadmin/phpmyadmin'
+    restart: always
+    ports:
+       - '8080:80'
+    links:
+        - mysql:mysql
+    environment:
+        MYSQL_USERNAME: root
+        MYSQL_ROOT_PASSWORD: hakase-labs123
+        PMA_HOST: mysql
